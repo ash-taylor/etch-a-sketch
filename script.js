@@ -1,35 +1,42 @@
-const sizeButton = document.querySelector('#grid-size');
 const gridContainer = document.querySelector('.grid-container');
+let slider = document.getElementById('grid-size');
+let sliderOutput = document.getElementById('slider-output');
+let pixels = document.querySelectorAll('.pixel');
+
+sliderOutput.innerHTML = slider.value;
+let size = slider.value;
+
 let pixel = null;
 
-setSize(100);
+setSize(size);
 
-const pixels = document.querySelectorAll('.pixel');
+slider.oninput = function() {
+  sliderOutput.innerHTML = this.value;
+}
 
-sizeButton.addEventListener('click', () => {
-  let n = 0;
+slider.onchange = function() {
+  setSize(this.value);
+}
 
-  do {
-    n = parseInt(prompt('Grid size: '));
+function setSize (size) {
+  while (gridContainer.firstChild) {
+    gridContainer.removeChild(gridContainer.lastChild);
   }
-  while (n < 1 || n > 100)
 
-  setSize(n);
-})
+  gridContainer.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+  gridContainer.style.gridTemplateRows = `repeat(${size}, 1fr)`;
 
-function setSize (n) {
-  gridContainer.style.gridTemplateColumns = `repeat(${n}, 1fr)`;
-  gridContainer.style.gridTemplateRows = `repeat(${n}, 1fr)`;
-
-  for (let i = 0; i < (n ** 2); i++) {
+  for (let i = 0; i < (size ** 2); i++) {
     pixel = document.createElement('div');
     pixel.className = 'pixel';
     pixel.setAttribute('id', `pixel-${i}`);
-    pixel.style.backgroundColor = '#EEEEEE';
+    pixel.style.opacity = "0.1";
+    pixel.style.backgroundColor = 'black';
     gridContainer.appendChild(pixel);
   }
-}
 
-pixels.forEach((pixel) => {
-  pixel.addEventListener('mouseover', () => pixel.style.backgroundColor = 'black')
-})
+  pixels = document.querySelectorAll('.pixel');
+  pixels.forEach((pixel) => {
+    pixel.addEventListener('mouseover', () => pixel.style.opacity = (parseFloat(pixel.style.opacity) + 0.1).toString())
+  })
+}
